@@ -1,0 +1,11 @@
+.filterRoot {
+	display: flex;
+	justify-content: end;
+	float: right;
+	margin-top: 1.5em;
+	margin-right: 2rem;
+}
+
+.filter {
+	margin-left: 1em;
+}
