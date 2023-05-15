@@ -9,3 +9,7 @@
 .filter {
 	margin-left: 1em;
 }
+
+.progressBottom {
+	display: "flex";
+}

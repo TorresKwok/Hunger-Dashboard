@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react"
+import ProgressBar from "./progressBar"
 import * as d3 from "d3"
 import * as topojson from "topojson"
 import Filter from "./filter"
@@ -10,6 +11,7 @@ import styles from "./styles.module.css"
 function USMap() {
 	const [selectState, setSelectState] = useState("Select State")
 	const [selectYear, setSelectYear] = useState("Select Year")
+	const [progress, setProgress] = useState(0)
 
 	const stateChangeHandler = value => {
 		if (isNaN(+value)) {
@@ -17,6 +19,10 @@ function USMap() {
 		} else {
 			setSelectYear(value)
 		}
+	}
+
+	const progressChangeHandler = curProgress => {
+		setProgress(curProgress)
 	}
 
 	useEffect(() => {
@@ -53,6 +59,15 @@ function USMap() {
 			const eduData = await fetch(
 				"https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json",
 			).then(res => res.json())
+
+			if (progress !== 0) {
+				eduData.forEach(edu => {
+					edu.bachelorsOrHigher = (
+						edu.bachelorsOrHigher +
+						progress / 2
+					).toFixed(2)
+				})
+			}
 
 			if (selectYear !== "Select Year") {
 				eduData.forEach(edu => {
@@ -215,34 +230,38 @@ function USMap() {
 			legend.append("g").call(xAxis)
 		}
 		render()
-	}, [selectState, selectYear])
+	}, [selectState, selectYear, progress])
 
 	return (
-		<div id="container">
-			<h1 id="title">United States Food Assistance Dashboard</h1>
-			<div id="description">
+		<div id='container'>
+			<h1 id='title'>United States Food Assistance Dashboard</h1>
+			<div id='description'>
 				Percentage of food assistance application collected by Google
 				Trends (2018-2020)
 			</div>
-			<div className={styles.filterRoot}>
-				<Filter
-					title={selectYear}
-					datas={[2018, 2019, 2020]}
-					id="year"
-					stateChange={stateChangeHandler}
-					className={styles.filter}
-				/>
-				<Filter
-					title={selectState}
-					datas={["United States", "California", "Texas"]}
-					id="state"
-					stateChange={stateChangeHandler}
-					className={styles.filter}
-				/>
+			<div style={{ display: "flex", justifyContent: "space-between" }}>
+				<ProgressBar progressChange={progressChangeHandler} />
+
+				<div className={styles.filterRoot}>
+					<Filter
+						title={"Select Year"}
+						datas={[2018, 2019, 2020]}
+						id='year'
+						stateChange={stateChangeHandler}
+						className={styles.filter}
+					/>
+					<Filter
+						title={"Select State"}
+						datas={["United States", "California", "Texas"]}
+						id='state'
+						stateChange={stateChangeHandler}
+						className={styles.filter}
+					/>
+				</div>
 			</div>
 
-			<div id="theChart"></div>
-			<div id="theLegend"></div>
+			<div id='theChart'></div>
+			<div id='theLegend'></div>
 		</div>
 	)
 }
