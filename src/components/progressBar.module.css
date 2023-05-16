@@ -1,14 +1,19 @@
 .progressBarRoot {
 	margin: 0;
 	box-sizing: border-box;
-	/* background-color: #eef6f8; */
+	background-color: #edf6f8;
 
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	width: 400px;
+	width: 450px;
 	margin-top: 1.5em;
 	margin-left: 3em;
+	margin-bottom: 1em;
+	padding: 1em;
+	padding-left: 2em;
+	padding-right: 2em;
+	border-radius: 20px;
 }
 
 .container {
@@ -28,7 +33,7 @@
 .progressBarFill {
 	height: 100%;
 	border-radius: 10px;
-	background-color: #2ecc71;
+	background-color: #2ecc70b6;
 	transition: width 0.5s ease-out;
 }
 

@@ -12,7 +12,7 @@ import styles from "./styles.module.css"
 function USMap() {
 	const [selectState, setSelectState] = useState("Select State")
 	const [selectDate, setSelectDate] = useState({ year: 2019, month: 2 })
-	const [progress, setProgress] = useState(0)
+	const [progress, setProgress] = useState("")
 
 	const stateChangeHandler = value => {
 		if (value.includes("-")) {
@@ -58,23 +58,22 @@ function USMap() {
 				).features
 			}
 
-			const eduData = await fetch(
-				"https://raw.githubusercontent.com/no-stack-dub-sack/testable-projects-fcc/master/src/data/choropleth_map/for_user_education.json",
-			).then(res => res.json())
+			let filter_SNAP_data
 
-			// console.log(eduData)
+			if (progress === "") {
+				filter_SNAP_data = SNAP_data.filter(
+					data =>
+						data.Year === selectDate.year &&
+						data.Month === selectDate.month,
+				)
+			}
 
-			const filter_SNAP_data = SNAP_data.filter(
-				data =>
-					data.Year === selectDate.year &&
-					data.Month === selectDate.month,
-			)
-
-			filter_SNAP_data.forEach(data => {
-				data.fips = eduData.find(edu =>
-					edu.area_name.startsWith(data.County),
-				).fips
-			})
+			if (progress !== "") {
+				const [curYear, curMonth] = progress.split("-")
+				filter_SNAP_data = SNAP_data.filter(
+					data => data.Year === +curYear && data.Month === +curMonth,
+				)
+			}
 
 			// console.log(filter_SNAP_data)
 
@@ -82,14 +81,9 @@ function USMap() {
 
 			// console.log(renderData)
 
-			if (progress !== 0) {
-				eduData.forEach(edu => {
-					edu.bachelorsOrHigher = (
-						edu.bachelorsOrHigher +
-						progress / 2
-					).toFixed(2)
-				})
-			}
+			// if (progress !== "") {
+
+			// }
 
 			// if (selectYear !== "Select Year") {
 			// 	eduData.forEach(edu => {
@@ -128,16 +122,16 @@ function USMap() {
 					// return handleGetBachelors(d)
 					return handleSNAPData(d)
 				})
+				// .attr("stroke", "#ddd")
+				// .attr("stroke-width", "0.2px")
 				.on("mouseover", handleMouseOver)
 				.on("mouseout", handleMouseOut)
 
 			function handleSNAPData(d) {
 				for (let i = 0; i < filter_SNAP_data.length; i++) {
 					if (
-						d.id === filter_SNAP_data[i].fips ||
-						filter_SNAP_data[i].County.startsWith(
-							d?.properties.NAME,
-						)
+						d.id === +filter_SNAP_data[i].fipsValue ||
+						+d?.properties.GEOID === +filter_SNAP_data[i].fipsValue
 					) {
 						return filter_SNAP_data[i].Flag
 					}
@@ -156,25 +150,25 @@ function USMap() {
 			// 	}
 			// }
 
-			function handleGetColor(x) {
-				if (x <= 12) {
-					return "color-01"
-				} else if (x > 12 && x <= 21) {
-					return "color-02"
-				} else if (x > 21 && x <= 30) {
-					return "color-03"
-				} else if (x > 30 && x <= 39) {
-					return "color-04"
-				} else if (x > 39 && x <= 48) {
-					return "color-05"
-				} else if (x > 48 && x <= 57) {
-					return "color-06"
-				} else if (x > 57) {
-					return "color-07"
-				} else {
-					return "color-error"
-				}
-			}
+			// function handleGetColor(x) {
+			// 	if (x <= 12) {
+			// 		return "color-01"
+			// 	} else if (x > 12 && x <= 21) {
+			// 		return "color-02"
+			// 	} else if (x > 21 && x <= 30) {
+			// 		return "color-03"
+			// 	} else if (x > 30 && x <= 39) {
+			// 		return "color-04"
+			// 	} else if (x > 39 && x <= 48) {
+			// 		return "color-05"
+			// 	} else if (x > 48 && x <= 57) {
+			// 		return "color-06"
+			// 	} else if (x > 57) {
+			// 		return "color-07"
+			// 	} else {
+			// 		return "color-error"
+			// 	}
+			// }
 
 			var tooltip = d3
 				.select("#theChart")
@@ -199,7 +193,7 @@ function USMap() {
 					.style("left", event.pageX + 10 + "px")
 					.html(
 						"<center> " +
-							handleGetLocation(d.id || d.properties.NAME) +
+							handleGetLocation(d.id || +d.properties.GEOID) +
 							" </center>",
 					)
 			}
@@ -223,11 +217,11 @@ function USMap() {
 				// }
 
 				const node = filter_SNAP_data.find(
-					data => data?.fips === x || data.County.startsWith(x),
+					data => +data.fipsValue === x,
 				)
 
 				if (!node) return "No Data Available"
-				return `${node.County}, ${
+				return `${node.County.substring(0, node.County.length - 7)}, ${
 					node.State === "California" ? "CA" : "TX"
 				}<br>Applications: ${node.SNAP_Applications}`
 			}
@@ -244,9 +238,9 @@ function USMap() {
 			// const legendColors = [12, 21, 30, 39, 48, 57, 66]
 			const texts = [
 				{ text: "Greater than 2σ", color: "Red" },
-				{ text: "Below 2σ", color: "Yellow" },
-				{ text: "Within +/- 1σ", color: "Green" },
-				{ text: "No data available", color: "Grey" },
+				{ text: "Below 2σ", color: "YellowTitle" },
+				{ text: "Within +/- 1σ", color: "GreenTitle" },
+				{ text: "No data available", color: "GreyTitle" },
 			]
 
 			let legend = svg
@@ -313,38 +307,42 @@ function USMap() {
 	}, [selectState, selectDate, progress])
 
 	return (
-		<div id='container'>
-			<h1 id='title'>United States Food Assistance Dashboard</h1>
-			<div id='description'>
-				Percentage of food assistance application collected by Google
-				Trends (2018-2020)
+		<div id="container">
+			<h1 id="title">United States Food Assistance Dashboard</h1>
+			<div id="description">
+				SNAP food assistance application collected by Google Trends
+				(2019-2021)
 			</div>
 			<div style={{ display: "flex", justifyContent: "space-between" }}>
-				<ProgressBar progressChange={progressChangeHandler} />
+				<ProgressBar
+					progressChange={progressChangeHandler}
+					min={"2019-02"}
+					max={"2021-12"}
+				/>
 
 				<div className={styles.filterRoot}>
 					<Filter
 						title={"Pick a Month"}
 						datas={{ min: "2019-02", max: "2021-12" }}
-						id='month'
+						id="month"
 						stateChange={stateChangeHandler}
 						className={styles.filter}
-						type='month'
+						type="month"
 					/>
 
 					<Filter
 						title={"Select State"}
 						datas={["United States", "California", "Texas"]}
-						id='state'
+						id="state"
 						stateChange={stateChangeHandler}
 						className={styles.filter}
-						type='select'
+						type="select"
 					/>
 				</div>
 			</div>
 
-			<div id='theChart'></div>
-			<div id='theLegend'></div>
+			<div id="theChart"></div>
+			<div id="theLegend"></div>
 		</div>
 	)
 }

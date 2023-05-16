@@ -81,3 +81,15 @@ body {
 .Grey {
 	fill: #ccc;
 }
+
+.YellowTitle {
+	fill: #fad12cd9;
+}
+
+.GreenTitle {
+	fill: #41ab5d;
+}
+
+.GreyTitle {
+	fill: #aeadad;
+}
