@@ -65,3 +65,19 @@ body {
 .color-error {
 	fill: #000000;
 }
+
+.Green {
+	fill: #b1d8b7;
+}
+
+.Red {
+	fill: #ef7c8e;
+}
+
+.Yellow {
+	fill: #feeba0;
+}
+
+.Grey {
+	fill: #ccc;
+}

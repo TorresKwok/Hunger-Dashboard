@@ -12,7 +12,10 @@ function ProgressBar(props) {
 		if (!played) return
 		const timer = setTimeout(() => {
 			setProgress(prev => {
-				if (progress === 100) return 100
+				if (progress === 100) {
+					setPlayed(false)
+					return 100
+				}
 				progressChange(prev + 5)
 				return prev + 5
 			})
