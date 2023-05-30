@@ -11,7 +11,7 @@ import styles from "./styles.module.css"
 
 function USMap() {
 	const [selectState, setSelectState] = useState("Select State")
-	const [selectDate, setSelectDate] = useState({ year: 2019, month: 2 })
+	const [selectDate, setSelectDate] = useState({ year: 2021, month: 12 })
 	const [progress, setProgress] = useState("")
 
 	const stateChangeHandler = value => {
@@ -237,9 +237,9 @@ function USMap() {
 			// const legH = 20
 			// const legendColors = [12, 21, 30, 39, 48, 57, 66]
 			const texts = [
-				{ text: "Greater than 2σ", color: "Red" },
-				{ text: "Below 2σ", color: "YellowTitle" },
-				{ text: "Within +/- 1σ", color: "GreenTitle" },
+				{ text: "High Risk", color: "Red" },
+				{ text: "Elevated Risk", color: "YellowTitle" },
+				{ text: "Stable Risk", color: "GreenTitle" },
 				{ text: "No data available", color: "GreyTitle" },
 			]
 
