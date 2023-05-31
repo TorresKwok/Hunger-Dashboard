@@ -5,7 +5,7 @@ import * as topojson from "topojson"
 import Filter from "./filter"
 import ca_data from "../data/CA.json"
 import tx_data from "../data/TX.json"
-import SNAP_data from "../data/SNAP.json"
+import SNAP_data from "../data/SNAP_20192021.json"
 
 import styles from "./styles.module.css"
 
@@ -220,10 +220,16 @@ function USMap() {
 					data => +data.fipsValue === x,
 				)
 
+				console.log(node)
+
 				if (!node) return "No Data Available"
 				return `${node.County.substring(0, node.County.length - 7)}, ${
 					node.State === "California" ? "CA" : "TX"
-				}<br>Applications: ${node.SNAP_Applications}`
+				}<br>Applications: ${node.SNAP_Applications}
+				 <br>Population Density: ${node.PDensity}
+				 <br>Population: ${node.Population}
+				 <br>worker: ${node.last_worker}
+				 <br>disaster: ${node.last_disaster}`
 			}
 
 			function handleMouseOut(event, d) {
