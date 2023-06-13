@@ -5,7 +5,7 @@ import * as topojson from "topojson"
 import Filter from "./filter"
 import ca_data from "../data/CA.json"
 import tx_data from "../data/TX.json"
-import SNAP_data from "../data/SNAP_20192021.json"
+import SNAP_data from "../data/SNAP_20192022.json"
 
 import styles from "./styles.module.css"
 
@@ -225,7 +225,9 @@ function USMap() {
 				if (!node) return "No Data Available"
 				return `${node.County.substring(0, node.County.length - 7)}, ${
 					node.State === "California" ? "CA" : "TX"
-				}<br>Applications: ${node.SNAP_Applications}
+				}<br>${
+					node.Year < 2022 ? "Applications" : "Predict Applications"
+				}: ${node.SNAP_Applications || Math.floor(node.pred_snap)}
 				 <br>Population Density: ${node.PDensity}
 				 <br>Population: ${node.Population}
 				 <br>worker: ${node.last_worker}
@@ -313,9 +315,9 @@ function USMap() {
 	}, [selectState, selectDate, progress])
 
 	return (
-		<div id="container">
-			<h1 id="title">United States Food Assistance Dashboard</h1>
-			<div id="description">
+		<div id='container'>
+			<h1 id='title'>United States Food Assistance Dashboard</h1>
+			<div id='description'>
 				SNAP food assistance application collected by Google Trends
 				(2019-2021)
 			</div>
@@ -323,32 +325,32 @@ function USMap() {
 				<ProgressBar
 					progressChange={progressChangeHandler}
 					min={"2019-02"}
-					max={"2021-12"}
+					max={"2022-12"}
 				/>
 
 				<div className={styles.filterRoot}>
 					<Filter
 						title={"Pick a Month"}
-						datas={{ min: "2019-02", max: "2021-12" }}
-						id="month"
+						datas={{ min: "2019-02", max: "2022-12" }}
+						id='month'
 						stateChange={stateChangeHandler}
 						className={styles.filter}
-						type="month"
+						type='month'
 					/>
 
 					<Filter
 						title={"Select State"}
 						datas={["United States", "California", "Texas"]}
-						id="state"
+						id='state'
 						stateChange={stateChangeHandler}
 						className={styles.filter}
-						type="select"
+						type='select'
 					/>
 				</div>
 			</div>
 
-			<div id="theChart"></div>
-			<div id="theLegend"></div>
+			<div id='theChart'></div>
+			<div id='theLegend'></div>
 		</div>
 	)
 }
