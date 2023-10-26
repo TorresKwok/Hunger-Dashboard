@@ -10,15 +10,15 @@ function Filter(props) {
 	if (type === "select")
 		return (
 			<div className={`form-control w-full max-w-xs ${styles.filter}`}>
-				<label className="label">
-					<span className="label-text">{title}</span>
+				<label className='label'>
+					<span className='label-text'>{title}</span>
 				</label>
 				<select
-					className="select select-bordered"
+					className='select select-bordered'
 					onChange={onClickHandler}
 					defaultValue={"DEFAULT"}
 				>
-					<option disabled value="DEFAULT">
+					<option disabled value='DEFAULT'>
 						Pick one
 					</option>
 					{datas.map(data => (
@@ -33,14 +33,14 @@ function Filter(props) {
 	if (type === "month")
 		return (
 			<div>
-				<label className="label">
-					<span className="label-text">{title}</span>
+				<label className='label'>
+					<span className='label-text'>{title}</span>
 				</label>
 				<input
-					type="month"
-					placeholder="Type here"
-					className="input input-bordered w-full max-w-xs"
-					defaultValue={datas.max}
+					type='month'
+					placeholder='Type here'
+					className='input input-bordered w-full max-w-xs'
+					defaultValue={"2021-12"}
 					onChange={onClickHandler}
 					min={datas.min}
 					max={datas.max}

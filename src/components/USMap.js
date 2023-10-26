@@ -6,6 +6,7 @@ import Filter from "./filter"
 import ca_data from "../data/CA.json"
 import tx_data from "../data/TX.json"
 import SNAP_data from "../data/2019-2023_dashboard.json"
+import SNAP_data from "../data/SNAP_20192022.json"
 
 import styles from "./styles.module.css"
 
@@ -225,7 +226,9 @@ function USMap() {
 				if (!node) return "No Data Available"
 				return `${node.County.substring(0, node.County.length - 7)}, ${
 					node.State === "California" ? "CA" : "TX"
-				}<br>Applications: ${node.SNAP_Applications}
+				}<br>${
+					node.Year < 2022 ? "Applications" : "Predict Applications"
+				}: ${node.SNAP_Applications || Math.floor(node.pred_snap)}
 				 <br>Population Density: ${node.PDensity}
 				 <br>Population: ${node.Population} <br>
 				 ${node.Predicted === 1 ? "Predicted: true" : ""}
@@ -326,13 +329,13 @@ function USMap() {
 				<ProgressBar
 					progressChange={progressChangeHandler}
 					min={"2019-02"}
-					max={"2023-01"}
+					max={"2021-12"}
 				/>
 
 				<div className={styles.filterRoot}>
 					<Filter
 						title={"Pick a Month"}
-						datas={{ min: "2019-02", max: "2023-01" }}
+						datas={{ min: "2019-02", max: "2021-12" }}
 						id="month"
 						stateChange={stateChangeHandler}
 						className={styles.filter}
