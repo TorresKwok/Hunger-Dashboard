@@ -5,7 +5,7 @@ import * as topojson from "topojson"
 import Filter from "./filter"
 import ca_data from "../data/CA.json"
 import tx_data from "../data/TX.json"
-import SNAP_data from "../data/SNAP_20192021.json"
+import SNAP_data from "../data/2019-2023_dashboard.json"
 
 import styles from "./styles.module.css"
 
@@ -199,7 +199,7 @@ function USMap() {
 			}
 
 			function handleGetLocation(x) {
-				// console.log(x)
+				console.log(x)
 				// for (let i = 0; i < eduData.length; i++) {
 				// 	if (
 				// 		x === eduData[i].fips ||
@@ -227,10 +227,13 @@ function USMap() {
 					node.State === "California" ? "CA" : "TX"
 				}<br>Applications: ${node.SNAP_Applications}
 				 <br>Population Density: ${node.PDensity}
-				 <br>Population: ${node.Population}
-				 <br>worker: ${node.last_worker}
-				 <br>disaster: ${node.last_disaster}`
+				 <br>Population: ${node.Population} <br>
+				 ${node.Predicted === 1 ? "Predicted: true" : ""}
+				 `
 			}
+
+			// <br>worker: ${node.last_worker}
+			// <br>disaster: ${node.last_disaster}
 
 			function handleMouseOut(event, d) {
 				d3.select(this).attr("stroke", "none")
@@ -317,19 +320,19 @@ function USMap() {
 			<h1 id="title">United States Food Assistance Dashboard</h1>
 			<div id="description">
 				SNAP food assistance application collected by Google Trends
-				(2019-2021)
+				(2019-2023)
 			</div>
 			<div style={{ display: "flex", justifyContent: "space-between" }}>
 				<ProgressBar
 					progressChange={progressChangeHandler}
 					min={"2019-02"}
-					max={"2021-12"}
+					max={"2023-01"}
 				/>
 
 				<div className={styles.filterRoot}>
 					<Filter
 						title={"Pick a Month"}
-						datas={{ min: "2019-02", max: "2021-12" }}
+						datas={{ min: "2019-02", max: "2023-01" }}
 						id="month"
 						stateChange={stateChangeHandler}
 						className={styles.filter}
